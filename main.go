@@ -23,6 +23,7 @@ func main() {
 	router := gin.New()
 	bootstrap.SetupDB()
 	bootstrap.SetupRoute(router)
+	bootstrap.SetupLogger()
 	err := router.Run(":" + config.Get("app.port"))
 	if err != nil {
 		fmt.Println(err.Error())
