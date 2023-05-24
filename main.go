@@ -1,12 +1,14 @@
 package main
+
 import (
 	"flag"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"go-blog/bootstrap"
 	btsConfig "go-blog/config"
 	"go-blog/pkg/config"
-	"github.com/gin-gonic/gin"
 )
+
 func init() {
 	// 加载 config 目录下的配置信息
 	btsConfig.Initialize()
@@ -31,6 +33,8 @@ func main() {
 
 	// 初始化 DB
 	bootstrap.SetupDB()
+	// 初始化 Redis
+	bootstrap.SetupRedis()
 	// 初始化路由绑定
 	bootstrap.SetupRoute(router)
 	// 运行服务
