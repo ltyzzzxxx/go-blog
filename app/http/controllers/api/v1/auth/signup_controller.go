@@ -5,7 +5,7 @@ import (
 	v1 "go-blog/app/http/controllers/api/v1"
 	"go-blog/app/models/user"
 	"go-blog/app/requests"
-	"net/http"
+	"go-blog/pkg/response"
 )
 
 type SignupController struct {
@@ -17,7 +17,7 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 	if ok := requests.Validate(c, &request, requests.ValidateSignupPhoneExist); !ok {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"exist": user.IsPhoneExist(request.Phone),
 	})
 }
@@ -27,7 +27,7 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	if ok := requests.Validate(c, &request, requests.ValidateSignupEmailExist); !ok {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"exist": user.IsEmailExist(request.Email),
 	})
 }
