@@ -3,6 +3,7 @@ package user
 import (
 	"go-blog/app/models"
 	"go-blog/pkg/database"
+	"go-blog/pkg/hash"
 )
 
 type User struct {
@@ -18,4 +19,8 @@ type User struct {
 
 func (userModel *User) Create() {
 	database.DB.Create(&userModel)
+}
+
+func (userModel *User) ComparePassword(_password string) bool {
+	return hash.BcryptCheck(_password, userModel.Password)
 }
