@@ -1,10 +1,12 @@
 package verifycode
 
 import (
+	"fmt"
 	"go-blog/pkg/app"
 	"go-blog/pkg/config"
 	"go-blog/pkg/helpers"
 	"go-blog/pkg/logger"
+	"go-blog/pkg/mail"
 	"go-blog/pkg/redis"
 	"go-blog/pkg/sms"
 	"strings"
@@ -39,6 +41,24 @@ func (vc *VerifyCode) SendSMS(phone string) bool {
 		Template: config.GetString("sms.aliyun.template_code"),
 		Data:     map[string]string{"code": code},
 	})
+}
+
+func (vc *VerifyCode) SendEmail(email string) error {
+	code := vc.generateVerifyCode(email)
+	if !app.IsProduction() && strings.HasPrefix(email, config.GetString("verifycode.debug_email_suffix")) {
+		return nil
+	}
+	content := fmt.Sprintf("<h1>您的 Email 验证码是 %v </h1>", code)
+	mail.NewMailer().Send(mail.Email{
+		From: mail.From{
+			Address: config.GetString("mail.from.address"),
+			Name:    config.GetString("mail.from.name"),
+		},
+		To:      []string{email},
+		Subject: "Email 验证码",
+		HTML:    []byte(content),
+	})
+	return nil
 }
 
 func (vc *VerifyCode) CheckAnswer(key string, answer string) bool {
