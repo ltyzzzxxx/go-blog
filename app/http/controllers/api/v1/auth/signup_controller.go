@@ -5,6 +5,7 @@ import (
 	v1 "go-blog/app/http/controllers/api/v1"
 	"go-blog/app/models/user"
 	"go-blog/app/requests"
+	"go-blog/pkg/jwt"
 	"go-blog/pkg/response"
 )
 
@@ -44,7 +45,9 @@ func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 	}
 	_user.Create()
 	if _user.ID > 0 {
+		token := jwt.NewJWT().IssueToken(_user.GetStringID(), _user.Name)
 		response.CreatedJSON(c, gin.H{
+			"token": token,
 			"data": _user,
 		})
 	} else {
@@ -65,7 +68,9 @@ func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	}
 	userModel.Create()
 	if userModel.ID > 0 {
+		token := jwt.NewJWT().IssueToken(userModel.GetStringID(), userModel.Name)
 		response.CreatedJSON(c, gin.H{
+			"token": token,
 			"data": userModel,
 		})
 	} else {
