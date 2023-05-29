@@ -24,3 +24,17 @@ func (userModel *User) Create() {
 func (userModel *User) ComparePassword(_password string) bool {
 	return hash.BcryptCheck(_password, userModel.Password)
 }
+
+func GetByPhone(phone string) (userModel User) {
+	database.DB.Where("phone = ?", phone).First(&userModel)
+	return
+}
+
+func GetByMulti(loginID string) (userModel User) {
+	database.DB.
+		Where("phone = ?", loginID).
+		Or("email = ?", loginID).
+		Or("name = ?", loginID).
+		First(&userModel)
+	return
+}
